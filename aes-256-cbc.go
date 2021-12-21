@@ -46,9 +46,11 @@ func Base64Encrypt(data, key, salt []byte) (outBase64 []byte, err error) {
 
 // Encrypt will encrypt. If salt is not given, it will randomly generated
 func Encrypt(data, key, salt []byte) (out []byte, err error) {
-	defer gosl.IfPanic("Encrypt", func(e error) {
+	defer gosl.IfPanic("Encrypt", func(a interface) {
 		out = nil
-		err = e
+		if e, ok := a.(error); ok {
+			err = e	
+		}
 	})
 
 	if salt == nil {
@@ -71,9 +73,11 @@ func Encrypt(data, key, salt []byte) (out []byte, err error) {
 }
 
 func Decrypt(data, key []byte) (out []byte, err error) {
-	defer gosl.IfPanic("Decrypt", func(e error) {
+	defer gosl.IfPanic("Decrypt", func(a interface) {
 		out = nil
-		err = e
+		if e, ok := a.(error); ok {
+			err = e	
+		}
 	})
 	if len(data) < aes.BlockSize {
 		return nil, ERR_BAD_BLOCK
