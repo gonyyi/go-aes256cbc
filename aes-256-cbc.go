@@ -41,15 +41,15 @@ func Base64Encrypt(data, key, salt []byte) (outBase64 []byte, err error) {
 	if err != nil {
 		return nil, err
 	}
-	return EncodeBase64(out), nil
+	return FormatWidth(EncodeBase64(out), 64), nil
 }
 
 // Encrypt will encrypt. If salt is not given, it will randomly generated
 func Encrypt(data, key, salt []byte) (out []byte, err error) {
-	defer gosl.IfPanic("Encrypt", func(a interface{}) {
+	defer gosl.IfPanic(func(a interface{}) {
 		out = nil
 		if e, ok := a.(error); ok {
-			err = e	
+			err = e
 		}
 	})
 
@@ -73,10 +73,10 @@ func Encrypt(data, key, salt []byte) (out []byte, err error) {
 }
 
 func Decrypt(data, key []byte) (out []byte, err error) {
-	defer gosl.IfPanic("Decrypt", func(a interface{}) {
+	defer gosl.IfPanic(func(a interface{}) {
 		out = nil
 		if e, ok := a.(error); ok {
-			err = e	
+			err = e
 		}
 	})
 	if len(data) < aes.BlockSize {
@@ -98,6 +98,21 @@ func EncodeBase64(b []byte) []byte {
 	base64.StdEncoding.Encode(out, b)
 	return out
 }
+
+// FormatWidth will add a newline every nth bytes
+func FormatWidth(s []byte,n int) []byte {
+	var buffer bytes.Buffer
+	var n_1 = n - 1
+	var l_1 = len(s) - 1
+	for i, c := range s {
+		buffer.WriteByte(c)
+		if i % n == n_1 && i != l_1  {
+			buffer.WriteByte('\n')
+		}
+	}
+	return buffer.Bytes()
+}
+
 
 // DecodeBase64 takes base64 encoded byte slices and decode it
 func DecodeBase64(b []byte) ([]byte, error) {
