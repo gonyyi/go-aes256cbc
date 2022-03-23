@@ -9,7 +9,7 @@ import (
 var indexHtml []byte
 //go:embed wasm_exec.js
 var wasmJS []byte
-//go:embed goAes256cbc.wasm
+//go:embed gon_enc.wasm
 var wasmGo []byte
 
 func js() http.HandlerFunc {
@@ -33,9 +33,9 @@ func index() http.HandlerFunc {
 
 func main() {
 	http.HandleFunc("/wasm_exec.js", js())
-	http.HandleFunc("/goAes256cbc.wasm", wasm())
+	http.HandleFunc("/gon_enc.wasm", wasm())
 	http.HandleFunc("/", index())
-	err := http.ListenAndServe(":9090", nil)
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		println(err.Error())
 		return
